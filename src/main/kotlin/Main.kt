@@ -5,7 +5,7 @@ import java.sql.Connection
 
 
 fun main() {
-    val connection : Connection? = DatabaseManager().getConnection()
+    val connection : Connection? = DatabaseManager.getConnection()
     if (connection != null) {
         println("Conectado a base de datos")
     }

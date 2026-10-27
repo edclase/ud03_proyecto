@@ -4,20 +4,26 @@ import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
 
-class DatabaseManager {
+object DatabaseManager {
 
     val dbPath = "proyecto/datos/gamecatalog.sqlite"
     val dbFile = File(dbPath)
     val url = "jdbc:sqlite:${dbFile.absolutePath}"
+
     fun getConnection() : Connection? {
-        try {
-            val connection: Connection = DriverManager.getConnection(url)
-            return connection
+        return try {
+            DriverManager.getConnection(url)
         } catch (e: Exception) {
             println("Error al conectar: ${e.message}")
-            return null
+            null
         }
     }
-
+    fun closeConnection(connection: Connection?){
+        try {
+            connection?.close()
+        } catch (e: Exception) {
+            println("Error al cerrar la conexion: ${e.message}")
+        }
+    }
 
 }
