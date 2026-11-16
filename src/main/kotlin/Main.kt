@@ -1,34 +1,79 @@
 package esq.dam
 
+
+var USER : Int? = null
+
 fun main() {
-    println(" Listado inicial ")
-    VideogamesDAO.listGames().forEach { println(" - $it") }
-
-    println(" Consulta por ID (4) ")
-    println(VideogamesDAO.findById(4) ?: "No se encontró ningún videojuego con ese ID.")
-
-    println(" Insertar con género válido ")
-    val eldenRing = Videogame(title = "Elden Ring", genre = "Aventura", year = 2022, grade = 9.6)
-    val newId = VideogamesDAO.insertVideogame(eldenRing)
-    println(if (newId != null) "Insertado con ID $newId" else "No se pudo insertar.")
-
-    println(" Insertar con género inexistente (debe rechazarse sin dejar basura) ")
-    val fake = Videogame(title = "Fake Game", genre = "Souls-like", year = 2023, grade = 9.0)
-    val fakeId = VideogamesDAO.insertVideogame(fake)
-    println(if (fakeId == null) "Inserción rechazada correctamente." else "Insertado con ID $fakeId")
-
-    println("Actualizar nota del videojuego insertado ")
-    if (newId != null) {
-        val ok = VideogamesDAO.updateVideogame(eldenRing.copy(id = newId, grade = 9.9))
-        println(if (ok) "Nota actualizada a 9.9." else "No se encontró el ID $newId.")
+    var option = -1
+    var vgservice = VideogameCatalogService()
+    while (option != 0) {
+        showMenu()
+        option = readInt("Elige una opcion: ")
+        try {
+            when (option) {
+                1 -> vgservice.showAllVideogames()
+                2 -> vgservice.findVideogame()
+                3 -> vgservice.addVideogame()
+                4 -> vgservice.updateVideogame()
+                5 -> vgservice.deleteVideogame()
+                6 -> vgservice.addPlayer()
+                7 -> vgservice.deletePlayer()
+                8 -> vgservice.addList()
+                9 -> vgservice.deleteList()
+                10 -> vgservice.addVideogameToList()
+                11 -> vgservice.showVideogamesFromList()
+                0 -> println("Hasta luego.")
+                else -> println("Opcion no valida.")
+            }
+        } catch (e: Exception) {
+            println("Error: ${e.message}")
+        }
     }
+}
 
-    println(" Eliminar el videojuego insertado ")
-    if (newId != null) {
-        val ok = VideogamesDAO.deleteVideogame(newId)
-        println(if (ok) "Eliminado el videojuego con ID $newId." else "No se encontró el ID $newId.")
+fun showMenu() {
+    println("Usuario: $USER")
+    println("===== CATALOGO DE VIDEOJUEGOS =====")
+    println("-- Videojuegos --")
+    println("1. Ver todos los videojuegos")
+    println("2. Buscar videojuego por ID")
+    println("3. Anadir videojuego")
+    println("4. Modificar videojuego")
+    println("5. Eliminar videojuego")
+    println("-- Jugadores --")
+    println("6. Crear jugador")
+    println("7. Eliminar jugador")
+    println("-- Listas --")
+    println("8. Crear lista")
+    println("9. Eliminar lista")
+    println("10. Anadir videojuego a una lista")
+    println("11. Ver videojuegos de una lista")
+    println("0. Salir")
+}
+
+fun readText(message: String): String {
+    var text = ""
+    while (text.isBlank()) {
+        print(message)
+        text = readln().trim()
     }
+    return text
+}
 
-    println(" Listado final ")
-    VideogamesDAO.listGames().forEach { println(" - $it") }
+fun readInt(message: String): Int {
+    while (true) {
+        print(message)
+        val number = readln().trim().toIntOrNull()
+        if (number != null) return number
+        println("Introduce un numero entero.")
+    }
+}
+
+fun readDouble(message: String): Double {
+    while (true) {
+        print(message)
+        val number = readln().trim().replace(",", ".").toDoubleOrNull()
+        if (number != null) return number
+        println("Introduce un numero.")
+    }
 }

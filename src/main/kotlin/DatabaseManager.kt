@@ -6,13 +6,17 @@ import java.sql.DriverManager
 
 object DatabaseManager {
 
-    val dbPath = "proyecto/datos/gamecatalog.sqlite"
-    val dbFile = File(dbPath)
-    val url = "jdbc:sqlite:${dbFile.absolutePath}"
+    private const val HOST = "localhost"
+    private const val PORT = 3306
+    private const val DATABASE = "videogamescatalog"
+    private const val USER = "dam2026"
+    private const val PASSWORD = "dam2026"
+
+    private val url = "jdbc:mysql://$HOST:$PORT/$DATABASE?useSSL=false&serverTimezone=Europe/Madrid"
 
     fun getConnection() : Connection? {
         return try {
-            DriverManager.getConnection(url)
+            DriverManager.getConnection(url, USER, PASSWORD)
         } catch (e: Exception) {
             println("Error al conectar: ${e.message}")
             null
